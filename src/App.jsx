@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 
-// --- MOCK DATABASE (Local Storage) ---
-// In a real Node/Express app, this would be your MongoDB connection.
-// Here, we simulate it using the browser's storage so it works instantly.
-
-const SIMULATED_DELAY = 500; // Fake network delay (ms)
+const SIMULATED_DELAY = 500; 
 
 export default function BasicBistro() {
   const [user, setUser] = useState(null);
@@ -14,59 +10,50 @@ export default function BasicBistro() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   
-  // Form State
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [price, setPrice] = useState('');
 
-  // 1. Simulate Auth (Auto-login)
   useEffect(() => {
     setTimeout(() => {
       setUser({ uid: "local-dev-user-001" });
     }, 500);
   }, []);
 
-  // 2. Simulate "GET /api/menu" (Fetch from Local Storage)
   useEffect(() => {
     if (!user) return;
 
-    // Simulate API call delay
     setTimeout(() => {
       const storedMenu = localStorage.getItem('burnt_bobs_menu');
       if (storedMenu) {
         setMenu(JSON.parse(storedMenu));
       } else {
-        // Default seed data if empty
         setMenu([]);
       }
       setLoading(false);
     }, SIMULATED_DELAY);
   }, [user]);
 
-  // Helper to save to "DB"
   const saveToDb = (newMenu) => {
     localStorage.setItem('burnt_bobs_menu', JSON.stringify(newMenu));
     setMenu(newMenu);
   };
 
-  // 3. Actions (Simulating POST and DELETE)
   const addItem = async (e) => {
     e.preventDefault();
     if (!name || !price) return alert('Please fill out name and price');
 
     const newItem = {
-      id: Date.now().toString(), // Mock ID generation
+      id: Date.now().toString(), 
       name, 
       description: desc || 'No description provided.',
       price: parseFloat(price),
       createdAt: new Date().toISOString()
     };
 
-    // Simulate Network Request
     const updatedMenu = [newItem, ...menu];
     saveToDb(updatedMenu);
     
-    // Clear form
     setName('');
     setDesc('');
     setPrice('');
@@ -84,7 +71,6 @@ export default function BasicBistro() {
   return (
     <div className="p-5 font-mono max-w-3xl mx-auto bg-gray-50 min-h-screen border-x-2 border-gray-300">
       
-      {/* HEADER: Hackathon Style */}
       <header className="mb-8 border-b-2 border-black pb-4">
         <h1 className="text-3xl font-bold text-indigo-800 underline decoration-wavy">Burnt Bob's Bistro</h1>
         <div className="flex justify-between items-end mt-2">
@@ -98,7 +84,6 @@ export default function BasicBistro() {
         </div>
       </header>
 
-      {/* ADMIN TOGGLE */}
       <div className="mb-8 flex items-center gap-4 bg-white p-3 border border-gray-300 shadow-sm">
         <label className="flex items-center gap-2 cursor-pointer select-none">
           <div className={`w-5 h-5 border-2 border-black flex items-center justify-center ${isAdmin ? 'bg-red-500' : 'bg-white'}`}>
@@ -117,7 +102,6 @@ export default function BasicBistro() {
         </div>
       </div>
 
-      {/* ADD FORM: The "Post" Request */}
       {isAdmin && (
         <div className="bg-blue-50 p-6 border-2 border-blue-200 mb-10 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
           <h3 className="font-bold mb-4 text-blue-900 border-b border-blue-200 pb-2">CREATE NEW ITEM</h3>
@@ -150,7 +134,6 @@ export default function BasicBistro() {
         </div>
       )}
 
-      {/* MENU LIST: The "Get" Request */}
       <div className="space-y-4 mb-10">
         <h2 className="text-xl font-bold bg-gray-800 text-white p-3">
            Current Menu ({menu.length} Items)
